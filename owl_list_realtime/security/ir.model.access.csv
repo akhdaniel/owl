@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_vit_progressbar_timer_vit_progressbar_timer,vit_progressbar_timer.vit_progressbar_timer,model_vit_progressbar_timer_vit_progressbar_timer,base.group_user,1,1,1,1

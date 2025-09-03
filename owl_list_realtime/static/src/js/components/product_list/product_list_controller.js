@@ -1,28 +1,20 @@
 /** @odoo-module  */
 
-import { useBus, useService } from "@web/core/utils/hooks";
-import { KanbanController } from "@web/views/kanban/kanban_controller";
-import {  onWillStart, useState, onWillUnmount, onMounted, onWillDestroy, onRendered} from "@odoo/owl";
-import { kanbanView } from "@web/views/kanban/kanban_view";
+import { ListController } from "@web/views/list/list_controller";
+import {  onWillStart, useState, onWillUnmount, onMounted} from "@odoo/owl";
+import { listView } from "@web/views/list/list_view";
 import { registry } from "@web/core/registry";
 
-export class WoKanbanController extends KanbanController {
+export class WoListController extends ListController {
 
     setup() {
         super.setup();
-        console.log('============== setup WOKanbanController in addon...===========')
+        console.log('============== setup WOListController in addon...===========')
         this.state = useState({
             isLoading: false,
-            activeRequests: 0,
-            ticker:0,
         });
-        this.channel = "mrp.workorder"
+        this.channel = "product.template"
         this.busService = this.env.services.bus_service
-
-      
-        onMounted(()=>{
-            console.log('onMounted')                      
-        });
 
         // Clean up the interval when the component is destroyed
         onWillUnmount(() => {
@@ -35,9 +27,9 @@ export class WoKanbanController extends KanbanController {
             this.busService.addChannel(this.channel)
             this.busService.subscribe("notification", (payload) => {
                 console.log('subscribed channel=',this.channel,'payload=', payload)
-                //is loading protek double loading view kanban
+                //is loading protek double loading view list
                 if (payload.channel==this.channel && !this.state.isLoading)
-                    this.updateKanban();
+                    this.updateList();
             });             
         });
 
@@ -55,16 +47,16 @@ export class WoKanbanController extends KanbanController {
 
         notifications = notifications.filter(item => item.payload.channel === this.channel)
         if (notifications.length>0 && !this.state.isLoading){
-            this.updateKanban();
+            this.updateList();
         }
     }
 
-    async updateKanban() {
-        console.log('updateKanban....')
+    async updateList() {
+        console.log('updateList....')
         this.state.activeRequests++;
         this.state.isLoading = true;
         try {
-            // reload tampilan kanban saat ini dgn group, domain, order yang sama
+            // reload tampilan list saat ini dgn group, domain, order yang sama
             return await this.model.load({
                 groupBy: this.props.groupBy,
                 domain: this.props.domain,
@@ -79,10 +71,10 @@ export class WoKanbanController extends KanbanController {
     }
 }
 
-export const woKanbanView = {
-    ...kanbanView,
-    Controller: WoKanbanController, // ganti controller kanban dgn yg baru
+export const woListView = {
+    ...listView,
+    Controller: WoListController, // ganti controller list dgn yg baru
 };
 
-//register views kanban class
-registry.category("views").add("wo_kanban", woKanbanView);
+//register views list class
+registry.category("views").add("product_list", woListView);

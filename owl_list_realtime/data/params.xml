@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="wo_label_width" model="ir.config_parameter">
+        <field name="key">wo_label_width</field>
+        <field name="value">80</field>
+    </record>
+    <record id="wo_label_height" model="ir.config_parameter">
+        <field name="key">wo_label_height</field>
+        <field name="value">50</field>
+    </record>
+    <record id="wo_label_barcode_height" model="ir.config_parameter">
+        <field name="key">wo_label_barcode_height</field>
+        <field name="value">30</field>
+    </record>
+    <record id="wo_label_padding" model="ir.config_parameter">
+        <field name="key">wo_label_padding</field>
+        <field name="value">2</field>
+    </record>
+    <record id="printer_type" model="ir.config_parameter">
+        <field name="key">printer_type</field>
+        <field name="value">zpl</field>
+    </record>
+    <record id="printer_ip" model="ir.config_parameter">
+        <field name="key">printer_ip</field>
+        <field name="value">192.168.5.150</field>
+    </record>
+    <record id="printer_port" model="ir.config_parameter">
+        <field name="key">printer_port</field>
+        <field name="value">9100</field>
+    </record>
+</odoo>
