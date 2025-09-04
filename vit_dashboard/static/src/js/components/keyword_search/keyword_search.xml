@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-name="vit_dashboard.KeywordSearch" owl="1">
+        <div class="o_sp_input_dropdown" t-ref="search_container"
+        title="Cari kata kunci judul, keterangan, bidang, kegiatan kerjasama, nama, kriteria dan jenis mitra">
+            <input
+                type="text"
+                class="keyword_search_input form-control"
+                t-att-value="state.value"
+                t-att-placeholder="placeholder"
+                t-on-keyup="onKeyUp"
+                t-on-change="onChange"
+            />
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="vit_dashboard.PieChart" owl="1">
+        <div 
+            t-att-class="'p-3 shadow bg-white'" 
+            t-att-style="'border-radius: 10px; border: 1px solid #ddd;'">
+            <div class="fs-5 fw-bold mb-3 hover-underline cursor-pointer" t-on-click="openRecord">
+                <t t-esc="props.title"/>
+            </div>
+            <div t-att-class="'h-100 ' + props.class" t-ref="root">
+                <div class="h-100 position-relative" t-ref="container">
+                    <canvas t-ref="canvas" />
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

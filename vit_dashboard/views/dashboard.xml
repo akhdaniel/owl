@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+<data>
+    <record id="action_owl_dashboard" model="ir.actions.client">
+        <field name="name">OWL Dashboard</field>
+        <field name="tag">owl_dashboard</field>
+    </record>
+
+    <menuitem id="menu_owl_dashboard" name="OWL Dashboard"
+        action="action_owl_dashboard"
+        sequence="10"/>
+</data>
+</odoo>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="vit_dashboard.GoogleMap" owl="1">
+        <div t-att-class="'p-1 shadow bg-white'" 
+            t-att-style="'border-radius: 10px; border: 1px solid #ddd;'">
+            <div t-att-class="props.class" t-ref="root" 
+                style="overflow: hidden;">
+                <div class="position-relative h-100 w-100" t-ref="container">
+                    <div id="map" class="w-100" style="height: 732px"></div> <!-- Added padding-bottom -->
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

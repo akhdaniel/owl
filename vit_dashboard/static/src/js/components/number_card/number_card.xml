@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="vit_dashboard.NumberCard" owl="1">
+        <div t-on-click="openRecord"
+           t-att-class="'p-3 text-center text-white shadow d-flex align-items-center cursor-pointer ' + (props.bgColor || 'bg-primary')"
+           t-att-style="'border-radius: 10px; transition: box-shadow 0.3s ease;'"
+           onmouseover="this.classList.add('shadow-lg')"
+           onmouseout="this.classList.remove('shadow-lg')">
+            <!-- Icon Section -->
+            <div class="me-3 w-25 text-center">
+                <i t-att-class="props.icon || 'fa fa-info-circle'" t-att-style="'font-size: 2rem;'"></i>
+            </div>
+            <!-- Text Section -->
+            <div class="flex-grow-1 w-75">
+                <div class="row">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                <div class="fs-5 fw-bold">
+                                    <t t-out="props.title"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="fs-1 fw-bold">
+                                    <t t-out="state.val.total || 0"/>
+                                </div>
+                            </div>
+                        </div>
+                        <t t-if="'total_aktif' in state.val">
+                            <div class="d-flex justify-content-between">
+                                <div class="fs-5 fw-bold">Aktif</div>
+                                <div class="fs-5 fw-bold"><t t-out="state.val.total_aktif || 0"/></div>
+                            </div>
+                        </t>
+                        <t t-if="'total_tidak_aktif' in state.val">
+                            <div class="d-flex justify-content-between">
+                                <div class="fs-5 fw-bold">Tidak Aktif</div>
+                                <div class="fs-5 fw-bold"><t t-out="state.val.total_tidak_aktif || 0"/></div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

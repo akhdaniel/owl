@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="vit_dashboard.CalHeatMap" owl="1">
+        <div t-att-class="'p-3 shadow bg-white ' + props.class" 
+             t-att-style="'border-radius: 10px; border: 1px solid #ddd;'" 
+             t-ref="root">
+            <div t-ref="container">
+                <div id="calendar_basic"></div>
+            </div>
+        </div>
+    </t>
+</templates>

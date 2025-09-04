@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="vit_dashboard.ListCard" owl="1">
+        <div t-att-class="'p-3 shadow bg-white'" 
+            t-att-style="'border-radius: 10px; border: 1px solid #ddd;'">
+            <div class="fs-5 fw-bold mb-3">
+                <t t-esc="props.title"/> (Total: <t t-esc="state.total"/>)
+            </div>
+            <hr />
+            <div class="d-flex justify-content-end align-items-center mb-2">
+                <p class="font-weight-normal">Show</p>
+                <select t-model="state.pageSize" class="form-select d-inline-block w-auto ms-2 me-2" t-on-change="onPageSizeChange">
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select> 
+                <p class="font-weight-normal">entries</p>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                    Page <t t-esc="state.page"/> of <t t-esc="totalPages"/>
+                    <button class="btn btn-sm btn-outline-secondary ms-2" t-on-click="prevPage" t-att-disabled="state.page === 1">Prev</button>
+                    
+                    <t t-foreach="pageNumbers" t-as="p" t-key="p">
+                        <t t-if="p === '...'">
+                            <button class="btn btn-sm disabled ms-1">…</button>
+                        </t>
+                        <t t-else="">
+                            <button
+                                class="btn btn-sm"
+                                t-att-class="state.page === p ? 'btn-primary ms-1' : 'btn-outline-secondary ms-1'"
+                                t-on-click="() => this.goToPage(p)">
+                                <t t-esc="p"/>
+                            </button>
+                        </t>
+                    </t>
+
+                    <button class="btn btn-sm btn-outline-secondary ms-1" t-on-click="nextPage" t-att-disabled="state.page >= totalPages">Next</button>
+                </div>
+            </div>
+            <div t-att-class="props.class" t-att-style="props.style" t-ref="root">
+                <div class="h-100 position-relative" t-ref="container">
+                    <table class="table table-bordered table-striped table-hover">
+                        <tbody>
+                            <t t-foreach="state.data" t-as="item" t-key="item.id">
+                                <tr class="transition">
+                                    <td t-on-click="()=>this.openKerjasama(item)" 
+                                       class="cursor-pointer position-relative"
+                                       t-att-style="'transition: background-color 0.3s ease;'">
+                                        <div class="h5"><t t-esc="item.judul || ''"/></div>
+                                        <div class="text"><t t-esc="item.keterangan || ''"/></div>
+                                        <div class="d-flex justify-content-between align-items-end">
+                                            <div class="h6 mb-0">
+                                                Mitra: <t t-esc="item.nama_mitra || ''"/>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <span class="badge rounded-pill bg-danger text-white" t-if="item.tanggal_awal">
+                                                    <t t-esc="item.tanggal_awal"/>
+                                                </span>
+                                                <span class="badge rounded-pill bg-primary text-white" t-if="item.status_id">
+                                                    <t t-esc="item.status_id[1]"/>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
