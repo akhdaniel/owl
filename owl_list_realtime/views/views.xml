@@ -2,27 +2,17 @@
   <data>
     <!-- explicit list view definition -->
 
-    <record model="ir.ui.view" id="mrp_workcenter_view_kanban2">
-      <field name="name">mrp_workcenter_view_kanban2</field>
-      <field name="model">mrp.workorder</field>
-      <field name="inherit_id" ref="mrp.workcenter_line_kanban"/>
+    <record model="ir.ui.view" id="product_template_tree_view2">
+      <field name="name">product_template_tree_view2</field>
+      <field name="model">product.template</field>
+      <field name="inherit_id" ref="product.product_template_tree_view"/>
       <field name="arch" type="xml">
-          <xpath expr="//kanban" position="attributes">
-              <attribute name="js_class">wo_kanban</attribute>
+          <xpath expr="//list" position="attributes">
+              <attribute name="js_class">product_list</attribute>
           </xpath>
       </field>
     </record>
 
-    <!-- <record model="ir.ui.view" id="vit_progressbar_kanban2">
-      <field name="name">vit_progressbar_kanban2</field>
-      <field name="model">mrp.workorder</field>
-      <field name="inherit_id" ref="mrp.mrp_workcenter_view_kanban"/>
-      <field name="arch" type="xml">
-        <xpath expr="//field[@name='name']" position="after">
-
-        </xpath>
-      </field>
-    </record> -->
 
   </data>
 </odoo>

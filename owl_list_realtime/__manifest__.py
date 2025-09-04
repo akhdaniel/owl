@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Kanban Realtime",
+    'name': "List Realtime",
 
     'summary': "Short (1 phrase/line) summary of the module's purpose",
 
@@ -15,7 +15,7 @@ Long description of module's purpose
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mrp'],
+    'depends': ['base','product','stock'],
 
     # always loaded
     'data': [
@@ -28,8 +28,7 @@ Long description of module's purpose
 
     'assets': {
         'web.assets_backend': [
-            'owl_kanban_realtime/static/lib/*',
-            'owl_kanban_realtime/static/src/js/**/*',
+            'owl_list_realtime/static/src/js/**/*',
         ],
     },
 }

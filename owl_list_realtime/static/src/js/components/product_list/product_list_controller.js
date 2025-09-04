@@ -29,39 +29,40 @@ export class WoListController extends ListController {
                 console.log('subscribed channel=',this.channel,'payload=', payload)
                 //is loading protek double loading view list
                 if (payload.channel==this.channel && !this.state.isLoading)
-                    this.updateList();
+                    this.updateList(payload);
             });             
         });
 
     }
 
-    async start() {
-        console.log('starting...')
-         
-    }
 
-    onMessage({ detail: notifications }) {
-        console.log('onMessage notifications.length',notifications.length, 
-            'this.state.isLoading', this.state.isLoading, 
-            'this.state.activeRequests', this.state.activeRequests)
 
-        notifications = notifications.filter(item => item.payload.channel === this.channel)
-        if (notifications.length>0 && !this.state.isLoading){
-            this.updateList();
-        }
-    }
-
-    async updateList() {
-        console.log('updateList....')
+    async updateList(payload) {
+        console.log('updateList....', payload)
         this.state.activeRequests++;
         this.state.isLoading = true;
         try {
-            // reload tampilan list saat ini dgn group, domain, order yang sama
-            return await this.model.load({
-                groupBy: this.props.groupBy,
-                domain: this.props.domain,
-                orderBy: this.props.orderBy
-            })
+            // update kolom qty onhand
+            const name = payload.data.name 
+            const qty_available = payload.data.qty_available 
+            const name_col_index = 3 // for mobile device it is 2
+            const row = document.evaluate(
+                '//tr[td['+name_col_index+'][text()="'+name+'"]]', // mirik spt xpath, tapi langsung di JS
+                document, 
+                null, 
+                XPathResult.FIRST_ORDERED_NODE_TYPE, 
+                null
+            ).singleNodeValue;
+
+            // Update the 8th td (qty_available column)
+            if (row) {
+                const eighthTd = row.querySelector('td:nth-child(8)');
+                if (eighthTd) {
+                    eighthTd.textContent = qty_available; // format number in quiz
+                    // If you need to update the actual data attribute as well:
+                    eighthTd.setAttribute('data-tooltip', qty_available);
+                }
+            }
         } catch(e){
             console.error(e)
         } finally {
