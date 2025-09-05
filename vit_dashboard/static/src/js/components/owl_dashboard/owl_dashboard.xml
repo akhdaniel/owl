@@ -6,12 +6,7 @@
             <!-- filter-->
             <div class="row px-3 py-2">
                 <div class="col-12 col-md-3">
-                    <h1>Dashboard
-
-                    </h1>
-                    <h3>
-
-                    </h3>
+                    <h1>Dashboard</h1>
                 </div>
                 
                 <div class="col-12 col-md-3">
@@ -40,7 +35,7 @@
                         <NumberCard 
                             title="'Sales Order'" 
                             bgColor="'bg-success'" 
-                            field="'total_mitra'"
+                            field="'total_sale_order'"
                             model="'sale.order'"
                             domain="[]"
                             context="{'search_default_group_by_name': 1}"
@@ -51,7 +46,7 @@
                     <div class="col"> <!-- Kept the second NumberCard in the same row -->
                         <NumberCard 
                             title="'Purchase Order'" 
-                            field="'total_sale_order'"
+                            field="'total_purchace_order'"
                             model="'purchase.order'"
                             domain="[]"
                             onReload.bind="onKerjasamaNumberCardReload"
@@ -82,9 +77,9 @@
                 <!-- pie chart -->
                 <div class="row py-3">
                     <div class="col-md-3">
-                        <PieChart 
+                        <MyChart 
                             type="'pie'"                                
-                            title="'Status Sale Order'" 
+                            title="'Status SO'" 
                             model="'sale.order'"
                             domain="[]"
                             field="'total_sale_order_by_state'"
@@ -95,73 +90,79 @@
                     </div>
                 
                     <div class="col-md-3">
-                        <!-- <PieChart 
+                        <MyChart 
                             type="'pie'"                                
-                            title="'Mitra Kerjasama'" 
-                            model="'res.partner'"
+                            title="'Status PO'" 
+                            model="'purchase.order'"
                             domain="[]"
-                            context="{'search_default_group_by_jenis_sale_order': 1}"
-                            field="'total_sale_order_by_jenis'"
+                            context="{'search_default_group_by_state': 1}"
+                            field="'total_purchase_order_by_state'"
                             onReload.bind="onPieChartReload2"
                             colorIndex="2" 
-                        />-->
+                        />
                     </div>
 
                     <div class="col-md-3">
-                        <!-- Monitor leads -->
-                        <!-- <PieChart 
-                            type="'bar'"                                
-                            title="'Leads per Stage'" 
-                            model="'crm.lead'"
-                            domain="[]"
-                            context="{'search_default_stage': 1}"
-                            field="'total_lead_by_stage'"
+                        <MyChart 
+                            type="'pie'"                                
+                            title="'Status Invoice'" 
+                            model="'account.move'"
+                            domain="[['move_type','=','out_invoice']]"
+                            context="{'search_default_group_by_state': 1}"
+                            field="'total_account_move_by_stage'"
                             default_views="'kanban'"
                             onReload.bind="onPieChartReload3"
                             colorIndex="4"
-                        /> -->
+                        />
                     </div>
                     <div class="col-md-3">
-                        <!-- monitor per unit kerja  -->
-                        <!-- <PieChart 
-                            type="'bar'"                                
-                            title="'Calon Kerjasama per Unit Kerja'" 
-                            model="'crm.lead'"
-                            domain="[]"
-                            context="{'search_default_operating_unit_id': 1}"
-                            field="'total_lead_by_unit_kerja'"
+                        <MyChart 
+                            type="'pie'"                                
+                            title="'Status Vendor Bills'" 
+                            model="'account.move'"
+                            domain="[['move_type','=','in_invoice']]"
+                            context="{'search_default_group_by_state': 1}"
+                            field="'total_account_move_by_stage'"
                             onReload.bind="onPieChartReload4"
-                            
-                        /> -->
+                        />
                     </div>
                 </div>
 
                 <!-- cal heat map and bar chart -->
                 <div class="row mt-3 mb-3">
                     <div class="col-12 col-md-4">
-                        <!-- <CalHeatMap title="Kerjasama"/> -->
+                        <!-- <CalHeatMap title="SO"/> -->
+                        <MyChart 
+                            type="'bar'"
+                            title="'SO per Bulan'" 
+                            model="'sale.order'"
+                            domain="[]"
+                            field="'total_sale_order_by_month'"
+                            onReload.bind="onPieChartReload5"
+                            colorIndex="1"
+                        />
                     </div>   
                     <div class="col-12 col-md-4">
-                        <!-- <PieChart 
+                        <MyChart 
                             type="'bar'"
-                            title="'Sale Order per Country'" 
+                            title="'SO per Country'" 
                             model="'sale.order'"
                             domain="[]"
                             field="'total_sale_order_by_country'"
                             onReload.bind="onPieChartReload6"
                             colorIndex="1"
-                        /> -->
+                        />
                     </div>
                     <div class="col-12 col-md-4">
-                        <!-- <PieChart 
+                        <MyChart 
                             type="'bar'"
-                            title="'Sale Order per Tahun'" 
-                            model="'purchase.order'"
+                            title="'SO per Tahun'" 
+                            model="'sale.order'"
                             domain="[]"
                             field="'total_sale_order_by_year'"
-                            onReload.bind="onPieChartReload5"
+                            onReload.bind="onPieChartReload7"
                             colorIndex="2"
-                        /> -->
+                        />
                     </div>
                 </div> 
 

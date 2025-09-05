@@ -19,9 +19,12 @@ export class NumberCard extends Component {
         this.orm = useService("orm");
 
         this.state = useState({
-            val: { total: 0, total_aktif: 0, total_tidak_aktif: 0 },
+            val: { 
+                total: 0, 
+                total_aktif: 0, 
+                total_tidak_aktif: 0 
+            },
             domain: [],
-            // domainEncoded: "",
         });
 
         // Expose the reload method through the onReload prop
@@ -36,7 +39,6 @@ export class NumberCard extends Component {
 
     async reload() {
         const savedState = this.loadState()
-        // const combinedDomain = this.props.domain ? [...this.props.domain, ...(savedState.domain || [])] : (savedState.domain || []);
         this.state.domain = this.props.domain  || [];
         await this.getStatistics();
     }
@@ -45,8 +47,8 @@ export class NumberCard extends Component {
         const domain = this.state.domain || [];
         const field = this.props.field || "count";
 
-        console.log('================',this.props.model, field, domain)
         const res = await this.orm.call(this.props.model, "get_statistics", [domain, field]);
+
         this.state.val = res;
     }
 
@@ -67,7 +69,7 @@ export class NumberCard extends Component {
 
     loadState() {
         try {
-            const savedState = localStorage.getItem('kermaDashboardState');
+            const savedState = localStorage.getItem('owlDashboardState');
             if (!savedState) return {};
             
             const parsedState = JSON.parse(savedState);

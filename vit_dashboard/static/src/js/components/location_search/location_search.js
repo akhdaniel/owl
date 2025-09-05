@@ -30,25 +30,6 @@ export class LocationSearch extends Component {
         return _t("Search location...");
     }
 
-    // filterMitras(name) {
-    //     if (!name) {
-    //         return this.mitras;
-    //     }
-    //     return fuzzyLookup(name, this.mitras, (unit) => unit.label );
-    // }
-
-    // loadOptionsSource(request) {
-    //     const options = this.filterMitras(request);
-
-    //     if (!options.length) {
-    //         options.push({
-    //             label: _t("No records"),
-    //             classList: "o_m2o_no_result",
-    //             unselectable: true,
-    //         });
-    //     }
-    //     return options;
-    // }
 
     onKeyUp(event) {
         if (event.key === "Enter") {

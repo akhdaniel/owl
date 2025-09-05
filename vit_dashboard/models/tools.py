@@ -13,14 +13,7 @@ def domain_to_sql( domain, model):
         return '', ()
 
     model_name = model._name 
-    if model_name == 'crm.lead':
-        alias = 'l'  
-    elif model_name == 'operating.unit':
-        alias = 'ou'
-    elif model_name == 'res.partner':
-        alias = 'rp'
-    else:
-        alias = ''
+    alias = model_name.replace('.','_')
 
     where_clauses = []
     params = []

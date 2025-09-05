@@ -1,12 +1,11 @@
 /** @odoo-module */
 
 import { loadJS } from "@web/core/assets";
-import { ColorList } from "@web/core/colorlist/colorlist";
 import { Component, onWillStart, useRef, onMounted, onWillUnmount, useState } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 
-export class PieChart extends Component {
-    static template = "vit_dashboard.PieChart";
+export class MyChart extends Component {
+    static template = "vit_dashboard.MyChart";
     static props = {
         title: String,
         type: String,
@@ -48,12 +47,6 @@ export class PieChart extends Component {
     }
 
     async reload() {
-
-        // const combinedDomain = this.props.domain ? [...this.props.domain, ...(newDomain || [])] : (newDomain || []);
-        // this.state.domain = combinedDomain;
-
-        // console.log("Reloading PieChart with new domain:", this.state.domain);
-
         // Fetch new data and update the chart
         await this.getStatistics();
         this.updateChart();
@@ -62,7 +55,6 @@ export class PieChart extends Component {
     async getStatistics() {
         const savedState = this.loadState();
         const domain = savedState.domain || this.props.domain || [];
-        // const domain = this.state.domain || [];
         this.state.domain = domain
         const field = this.props.field || "count";
         const res = await this.orm.call(
@@ -136,13 +128,15 @@ export class PieChart extends Component {
             "LightSalmon": "#FFA07A",
             "MediumBlue": "#0000CD",
         };
-    
+
+        labels = Object.keys(this.state.data);
+        const color = labels.map((_, index) =>
+            colorKeys[(index + (this.props.colorIndex || 0)) % colorKeys.length]
+        );
+        const correctedColors = color.map((clr) => colorMapping[clr] || "#CCCCCC");    
+
+
         if (this.props.type === "pie") {
-            labels = Object.keys(this.state.data);
-            const color = labels.map((_, index) =>
-                colorKeys[(index + (this.props.colorIndex || 0)) % colorKeys.length]
-            );
-            const correctedColors = color.map((clr) => colorMapping[clr] || "#CCCCCC");
             const data = Object.values(this.state.data);
             datasets = [
                 {
@@ -152,27 +146,28 @@ export class PieChart extends Component {
                 },
             ];
         } else if (this.props.type === "bar") {
-            labels = Object.keys(this.state.data);
-            if (labels.length !== 0) {
-                const measures = Object.keys(this.state.data[labels[0]]); 
-                datasets = measures.map((measure, index) => ({
-                    label: measure,
-                    data: labels.map((group) => this.state.data[group][measure] || 0),
-                    backgroundColor: colorMapping[colorKeys[index % colorKeys.length]] || "#CCCCCC",
-                }));
-            } else {
-                labels = ["No Data"];
-                datasets = [];
-            }
+            const dataValues = Object.values(this.state.data);
+            datasets = [{
+                label: 'Count',
+                data: dataValues,
+                backgroundColor: correctedColors,
+                // borderColor: [
+                //     'rgba(255, 99, 132, 1)',
+                //     'rgba(54, 162, 235, 1)',
+                //     'rgba(255, 206, 86, 1)',
+                //     'rgba(75, 192, 192, 1)'
+                // ],
+                borderWidth: 1
+            }]
         }
-    
+
         return { labels, datasets };
     }
     
 
     openRecord() {
         const domain = this.state.domain;
-        // console.log("openRecord PieChart with domain:", domain);
+        // console.log("openRecord MyChart with domain:", domain);
         const context = this.props.context || {};
         let default_views
         if (this.props.default_views=='kanban')
@@ -180,7 +175,7 @@ export class PieChart extends Component {
         else
             default_views = [[false, 'list'],[false, 'kanban'], [false, 'form']];
 
-        // console.log("openRecord PieChart with context:", context);
+        // console.log("openRecord MyChart with context:", context);
         this.env.services.action.doAction({
             type: 'ir.actions.act_window',
             name: this.props.title,

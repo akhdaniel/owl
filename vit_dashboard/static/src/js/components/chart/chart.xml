@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates xml:space="preserve">
-    <t t-name="vit_dashboard.PieChart" owl="1">
+    <t t-name="vit_dashboard.MyChart" owl="1">
         <div 
             t-att-class="'p-3 shadow bg-white'" 
             t-att-style="'border-radius: 10px; border: 1px solid #ddd;'">

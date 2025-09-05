@@ -9,7 +9,7 @@ import { CalHeatMap } from '../cal_heatmap/cal_heatmap'
 import { GoogleMap } from "../maps/maps"
 import { NumberCard } from "../number_card/number_card"
 import { ListCard } from "../list_card/list_card"
-import { PieChart } from "../pie_chart/pie_chart"
+import { MyChart } from "../chart/chart"
 import { KeywordSearch } from "../keyword_search/keyword_search"
 import { LocationSearch } from "../location_search/location_search"
 
@@ -50,6 +50,7 @@ export class OWLDashboard extends Component {
         this.pieChartReload4 = null; // Placeholder for the reload method
         this.pieChartReload5 = null; // Placeholder for the reload method
         this.pieChartReload6 = null; // Placeholder for the reload method
+        this.pieChartReload7 = null; // Placeholder for the reload method
 
         this.googleMapReload = null; // Placeholder for the reload method
         this.listCardReload = null; // Placeholder for the reload method
@@ -79,7 +80,7 @@ export class OWLDashboard extends Component {
                 domain: this.state.domain
             };
             // console.log("saveState...stateToSave", stateToSave);
-            localStorage.setItem('kermaDashboardState', JSON.stringify(stateToSave));
+            localStorage.setItem('owlDashboardState', JSON.stringify(stateToSave));
         } catch (error) {
             console.error('Error saving state:', error);
         }
@@ -89,11 +90,10 @@ export class OWLDashboard extends Component {
 
     loadState() {
         try {
-            const savedState = localStorage.getItem('kermaDashboardState');
+            const savedState = localStorage.getItem('owlDashboardState');
             if (!savedState) return {};
             
             const parsedState = JSON.parse(savedState);
-            console.log("loadState...parsedState", parsedState);
 
             return {
                 ...parsedState,
@@ -109,14 +109,11 @@ export class OWLDashboard extends Component {
     }
 
     clearSavedState() {
-        localStorage.removeItem('kermaDashboardState');
+        localStorage.removeItem('owlDashboardState');
         // Reset all states to defaults
         this.state.selectedUnit = null;
         this.state.keyword = '';
         this.state.location = '';
-
-        $('#unit_selector').val('');
-
         this.state.selectedMitra = undefined;
         this.state.unitDomain = [];
         this.state.locationDomain = [];
@@ -182,6 +179,9 @@ export class OWLDashboard extends Component {
     }
     onPieChartReload6(reloadMethod) {
         this.pieChartReload6 = reloadMethod; // Capture the reload method
+    }
+    onPieChartReload7(reloadMethod) {
+        this.pieChartReload7 = reloadMethod; // Capture the reload method
     }
 
     onGoogleMapReload(reloadMethod) {
@@ -309,8 +309,12 @@ export class OWLDashboard extends Component {
 
 OWLDashboard.components = { 
     NumberCard, 
-    GoogleMap, Layout, PieChart, CalHeatMap, 
-    KeywordSearch , LocationSearch,
+    GoogleMap, 
+    Layout, 
+    MyChart, 
+    CalHeatMap, 
+    KeywordSearch , 
+    LocationSearch,
     ListCard 
 };
 
