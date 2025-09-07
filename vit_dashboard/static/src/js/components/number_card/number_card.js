@@ -39,16 +39,17 @@ export class NumberCard extends Component {
 
     async reload() {
         const savedState = this.loadState()
-        this.state.domain = this.props.domain  || [];
+        //gabungkan domain
+        const combinedDomain = this.props.domain ? [...this.props.domain, ...(savedState.domain || [])] : (savedState.domain || []);
+        this.state.domain = combinedDomain || [];
+
         await this.getStatistics();
     }
 
     async getStatistics() {
         const domain = this.state.domain || [];
-        const field = this.props.field || "count";
-
+        const field = this.props.field;
         const res = await this.orm.call(this.props.model, "get_statistics", [domain, field]);
-
         this.state.val = res;
     }
 

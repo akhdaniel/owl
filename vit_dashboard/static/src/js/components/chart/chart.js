@@ -52,8 +52,9 @@ export class MyChart extends Component {
         this.updateChart();
     }
 
-    async getStatistics() {
+    async getStatistics() {        
         const savedState = this.loadState();
+        console.log('chart======',savedState)
         const domain = savedState.domain || this.props.domain || [];
         this.state.domain = domain
         const field = this.props.field || "count";
@@ -189,14 +190,14 @@ export class MyChart extends Component {
 
     loadState() {
         try {
-            const savedState = localStorage.getItem('kermaDashboardState');
+            const savedState = localStorage.getItem('owlDashboardState');
             if (!savedState) return {};
             
             const parsedState = JSON.parse(savedState);
             // Ensure domain arrays are properly restored
             return {
                 ...parsedState,
-                unitDomain: parsedState.unitDomain || [],
+                partnerDomain: parsedState.partnerDomain || [],
                 locationDomain: parsedState.locationDomain || [],
                 keywordDomain: parsedState.keywordDomain || [],
                 domain: parsedState.domain || []

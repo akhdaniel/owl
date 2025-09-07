@@ -2,7 +2,7 @@
 
 import { registry } from "@web/core/registry"
 import { useService } from "@web/core/utils/hooks"
-const { Component, onWillStart,  useState } = owl
+const { Component, onWillStart,  useState, onMounted } = owl
 import { Layout } from "@web/search/layout"
 
 import { CalHeatMap } from '../cal_heatmap/cal_heatmap'
@@ -12,6 +12,7 @@ import { ListCard } from "../list_card/list_card"
 import { MyChart } from "../chart/chart"
 import { KeywordSearch } from "../keyword_search/keyword_search"
 import { LocationSearch } from "../location_search/location_search"
+import { PartnerSelector } from '../partner_selector/partner_selector'
 
 export class OWLDashboard extends Component {
     static template = "vit_dashboard.OWLDashboard";
@@ -22,27 +23,23 @@ export class OWLDashboard extends Component {
 
         // Load saved state from localStorage
         const savedState = this.loadState();
-        console.log("setup() savedState", savedState);
 
         this.state = useState({
             keyword: savedState.keyword || '',
             location: savedState.location || '',
             domain: savedState.domain || [],
-            locationDomain: savedState.location ? [['mitra_location', 'ilike', savedState.location]] : [],
+            locationDomain: savedState.location ? [['partner_location', 'ilike', savedState.location]] : [],
             keywordDomain: savedState.keyword ? [['keyword', 'ilike', savedState.keyword]] : [],
             resModelDescription: '',
+            selectedPartner: savedState.selectedPartner,
             mapKey: Date.now(), // Add this to force remount of GoogleMap
         });
 
-        this.mitraNumberCardReload = null; // Placeholder for the reload method
-        this.kerjasamaNumberCardReload = null; // Placeholder for the reload method
-        this.mouNumberCardReload = null; // Placeholder for the reload method
-        this.moaNumberCardReload = null; // Placeholder for the reload method
-        this.iaNumberCardReload = null; // Placeholder for the reload method
-        this.mahasiswaInboundNumberCardReload = null; // Placeholder for the reload method
-        this.mahasiswaOutboundNumberCardReload = null; // Placeholder for the reload method
-        this.kunjunganEksekutifNumberCardReload = null; // Placeholder for the reload method
-        this.kunjunganMitraNumberCardReload = null; // Placeholder for the reload method
+        this.numberCardReload1 = null; // Placeholder for the reload method
+        this.mumberCardReload2 = null; // Placeholder for the reload method
+        this.mumberCardReload3 = null; // Placeholder for the reload method
+        this.mumberCardReload4 = null; // Placeholder for the reload method
+        this.mumberCardReload5 = null; // Placeholder for the reload method
 
         this.pieChartReload1 = null; // Placeholder for the reload method
         this.pieChartReload2 = null; // Placeholder for the reload method
@@ -54,13 +51,20 @@ export class OWLDashboard extends Component {
 
         this.googleMapReload = null; // Placeholder for the reload method
         this.listCardReload = null; // Placeholder for the reload method
+        this.clearPartnerSelection = null; // Placeholder for the reload method
 
 
         onWillStart(() => {
             console.log("onWillStart...OWLDashboard", this.state.domain);
+
             this.reloadNumberCard();
         })
+
+        onMounted(()=>{
+            document.querySelector('.o-autocomplete--input').value = this.state.selectedPartner?.name;
+        })
     }
+
     saveState() {
         try {
             this.state.keywordDomain = this.state.keyword.includes(',')
@@ -69,12 +73,11 @@ export class OWLDashboard extends Component {
 
             this.combineDomain();
             const stateToSave = {
-                selectedUnit: this.state.selectedUnit,
-                selectedMitra: this.state.selectedMitra,
+                selectedPartner: this.state.selectedPartner,
                 location: this.state.location,
                 keyword: this.state.keyword,
                 // Save domain states
-                unitDomain: this.state.unitDomain,
+                partnerDomain: this.state.partnerDomain,
                 locationDomain: this.state.locationDomain,
                 keywordDomain: this.state.keywordDomain,
                 domain: this.state.domain
@@ -86,8 +89,6 @@ export class OWLDashboard extends Component {
         }
     }
 
-    
-
     loadState() {
         try {
             const savedState = localStorage.getItem('owlDashboardState');
@@ -95,12 +96,14 @@ export class OWLDashboard extends Component {
             
             const parsedState = JSON.parse(savedState);
 
+            console.log('parsedState======', parsedState)
+
             return {
                 ...parsedState,
-                unitDomain: parsedState.unitDomain || [],
-                locationDomain: parsedState.locationDomain || [],
-                keywordDomain: parsedState.keywordDomain || [],
-                domain: parsedState.domain || []
+                // partnerDomain: parsedState.partnerDomain || [],
+                // locationDomain: parsedState.locationDomain || [],
+                // keywordDomain: parsedState.keywordDomain || [],
+                // domain: parsedState.domain || []
             };
         } catch (error) {
             console.error('Error loading state:', error);
@@ -108,14 +111,19 @@ export class OWLDashboard extends Component {
         }
     }
 
+    onClearPartnerSelection(){
+        console.log('xelear')
+    }
+
     clearSavedState() {
         localStorage.removeItem('owlDashboardState');
-        // Reset all states to defaults
-        this.state.selectedUnit = null;
+
+        this.state.selectedPartner = null;
         this.state.keyword = '';
         this.state.location = '';
-        this.state.selectedMitra = undefined;
-        this.state.unitDomain = [];
+        document.querySelector('.o-autocomplete--input').value = '';
+
+        this.state.partnerDomain = [];
         this.state.locationDomain = [];
         this.state.keywordDomain = [];
         this.state.domain = [];
@@ -124,39 +132,37 @@ export class OWLDashboard extends Component {
       
     }
 
-    onMitraNumberCardReload(reloadMethod) {
-        this.mitraNumberCardReload = reloadMethod; // Capture the reload method
+    onPartnerSelected(e) {
+
+        console.log('onPartnerSelected e',e)
+        if (e === null || e === undefined) {
+            this.state.selectedPartner = null;
+            this.state.partnerDomain = [];
+        } else {
+            this.state.selectedPartner = e;
+            this.state.partnerDomain = [['partner_id', '=', e.id]];
+        }
+        this.saveState();
+        this.reloadNumberCard();
     }
 
-    onKerjasamaNumberCardReload(reloadMethod) {
-        this.kerjasamaNumberCardReload = reloadMethod; // Capture the reload method
+    onNumberCardReload1(reloadMethod) {
+        this.numberCardReload1 = reloadMethod; // Capture the reload method
     }
 
-    onMoUNumberCardReload(reloadMethod) {
-        this.mouNumberCardReload = reloadMethod; // Capture the reload method
+    onNumberCardReload2(reloadMethod) {
+        this.mumberCardReload2 = reloadMethod; // Capture the reload method
     }
 
-    onMoANumberCardReload(reloadMethod) {
-        this.moaNumberCardReload = reloadMethod; // Capture the reload method
-    }
-    onIaNumberCardReload(reloadMethod) {
-        this.iaNumberCardReload = reloadMethod; // Capture the reload method
+    onNumberCardReload3(reloadMethod) {
+        this.mumberCardReload3 = reloadMethod; // Capture the reload method
     }
 
-    onMahasiswaInboundNumberCardReload(reloadMethod) {
-        this.mahasiswaInboundNumberCardReload = reloadMethod; // Capture the reload method
+    onNumberCardReload4(reloadMethod) {
+        this.mumberCardReload4 = reloadMethod; // Capture the reload method
     }
-
-    onMahasiswaOutboundNumberCardReload(reloadMethod) {
-        this.mahasiswaOutboundNumberCardReload = reloadMethod; // Capture the reload method
-    }
-
-    onKunjunganEksekutifNumberCardReload(reloadMethod) {
-        this.kunjunganEksekutifNumberCardReload = reloadMethod; // Capture the reload method
-    }
-
-    onKunjunganMitraNumberCardReload(reloadMethod) {
-        this.kunjunganMitraNumberCardReload = reloadMethod; // Capture the reload method
+    onNumberCardReload5(reloadMethod) {
+        this.mumberCardReload5 = reloadMethod; // Capture the reload method
     }
 
     onPieChartReload1(reloadMethod, chartType) {
@@ -191,13 +197,12 @@ export class OWLDashboard extends Component {
         this.listCardReload = reloadMethod; // Capture the reload method
     }
 
-    onUnitChange(e) {
-
+    onCompanyChange(e) {
         if (e === null || e === undefined) {
-            this.state.selectedUnit = null;
-            this.state.unitDomain = [];
+            this.state.selectedCompany = null;
+            this.state.companyDomain = [];
         } else {
-            this.state.selectedUnit = e;
+            this.state.selectedCompany = e;
         }
         this.saveState();
         this.reloadNumberCard();
@@ -207,7 +212,7 @@ export class OWLDashboard extends Component {
         console.log("onLocationSearchEnter....", e);
         this.state.location = e
         if (e !== null && e != undefined && e != '') {
-            this.state.locationDomain = [['mitra_location', 'ilike', e]];
+            this.state.locationDomain = [['partner_location', 'ilike', e]];
         }
         else {
             this.state.locationDomain = [];
@@ -230,50 +235,30 @@ export class OWLDashboard extends Component {
     }
 
     combineDomain(){
-        this.state.domain = [...(this.state.unitDomain || []), ...(this.state.keywordDomain || []), ...(this.state.locationDomain || [])];
+        this.state.domain = [...(this.state.partnerDomain || []), ...(this.state.keywordDomain || []), ...(this.state.locationDomain || [])];
     }
 
     reloadNumberCard() {
-        console.log("reloadNumberCard...domain=", this.state.domain);
-        // this.combineDomain();
 
         // Call the reload method if it exists
-        if (this.mitraNumberCardReload) {
-            this.mitraNumberCardReload();
+        if (this.numberCardReload1) {
+            this.numberCardReload1();
         }
         // Call the reload method if it exists
-        if (this.kerjasamaNumberCardReload) {
-            this.kerjasamaNumberCardReload();
+        if (this.mumberCardReload2) {
+            this.mumberCardReload2();
         }
-        // Call the reload method if it exists
-        if (this.inboundNumberCardReload) {
-            this.inboundNumberCardReload();
+
+        if (this.mumberCardReload3) {
+            this.mumberCardReload3();
         }
-        // Call the reload method if it exists
-        if (this.outboundNumberCardReload) {
-            this.outboundNumberCardReload();
+        if (this.mumberCardReload4) {
+            this.mumberCardReload4();
         }
-        if (this.mouNumberCardReload) {
-            this.mouNumberCardReload();
+        if (this.mumberCardReload5) {
+            this.mumberCardReload5();
         }
-        if (this.moaNumberCardReload) {
-            this.moaNumberCardReload();
-        }
-        if (this.iaNumberCardReload) {
-            this.iaNumberCardReload();
-        }
-        if (this.mahasiswaInboundNumberCardReload) {
-            this.mahasiswaInboundNumberCardReload();
-        }
-        if (this.mahasiswaOutboundNumberCardReload) {
-            this.mahasiswaOutboundNumberCardReload();
-        }
-        if (this.kunjunganEksekutifNumberCardReload) {
-            this.kunjunganEksekutifNumberCardReload();
-        }
-        if (this.kunjunganMitraNumberCardReload) {
-            this.kunjunganMitraNumberCardReload();
-        }
+       
         // Call the reload method if it exists
         if (this.pieChartReload1) {
             this.pieChartReload1();
@@ -303,8 +288,6 @@ export class OWLDashboard extends Component {
             this.listCardReload();
         }
     }
-
-
 }
 
 OWLDashboard.components = { 
@@ -315,6 +298,7 @@ OWLDashboard.components = {
     CalHeatMap, 
     KeywordSearch , 
     LocationSearch,
+    PartnerSelector,
     ListCard 
 };
 

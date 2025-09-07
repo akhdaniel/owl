@@ -7,8 +7,21 @@
             <div class="row px-3 py-2">
                 <div class="col-12 col-md-3">
                     <h1>Dashboard</h1>
+                    <h3>
+                        <t t-if="state.selectedPartner">
+                            Partner: <t t-esc="state.selectedPartner.name"/>
+                        </t>
+                    </h3>                    
                 </div>
                 
+                <div class="col-12 col-md-3">
+                    <div class="form-control px-1 m-0" >
+                        <PartnerSelector
+                            value="state.selectedPartner?.name || ''"
+                            onPartnerSelected.bind="onPartnerSelected"
+                        />
+                    </div>
+                </div>         
                 <div class="col-12 col-md-3">
                     <LocationSearch
                         value="state.location || ''"
@@ -37,10 +50,10 @@
                             bgColor="'bg-success'" 
                             field="'total_sale_order'"
                             model="'sale.order'"
-                            domain="[]"
+                            domain="[]" 
                             context="{'search_default_group_by_name': 1}"
                             icon="'fa fa-users'"
-                            onReload.bind="onMitraNumberCardReload"
+                            onReload.bind="onNumberCardReload1"
                         />
                     </div>
                     <div class="col"> <!-- Kept the second NumberCard in the same row -->
@@ -49,7 +62,7 @@
                             field="'total_purchace_order'"
                             model="'purchase.order'"
                             domain="[]"
-                            onReload.bind="onKerjasamaNumberCardReload"
+                            onReload.bind="onNumberCardReload2"
                             bgColor="'bg-warning'"/>
                     </div>
                     <div class="col"> <!-- Added ms-3 for left margin -->
@@ -58,8 +71,8 @@
                             bgColor="'bg-primary'" 
                             field="'total_sale_order_mou'"
                             model="'account.move'"
-                            domain="[['jenis_dokumen_id','ilike','mou']]"
-                            onReload.bind="onMoUNumberCardReload"
+                            domain="[['move_type','=','out_invoice']]"
+                            onReload.bind="onNumberCardReload3"
                             icon="'fa fa-users'"/>
                     </div>
                     <div class="col"> <!-- Kept the second NumberCard in the same row -->
@@ -67,8 +80,8 @@
                             title="'Vendor Bills'" 
                             field="'total_sale_order_moa'"
                             model="'account.move'"
-                            domain="[['jenis_dokumen_id','ilike','moa']]"
-                            onReload.bind="onMoANumberCardReload"
+                            domain="[['move_type','=','in_invoice']]"
+                            onReload.bind="onNumberCardReload4"
                             bgColor="'bg-info'"/>
                     </div>
                    

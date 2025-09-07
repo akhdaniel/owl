@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-name="web.PartnerSelector" owl="1">
+        <div class="o_sp_input_dropdown" t-ref="autocomplete_container"
+        title="Cari nama partner">
+            
+            <AutoComplete 
+                id="props.id"
+                value="state.value"
+                sources="sources"
+                placeholder="placeholder"
+                autoSelect="props.autoSelect"
+                onSelect.bind="onSelect"
+                t-on-input="onInput"
+            />
+            <a role="button" class="o_dropdown_button" draggable="false" />
+        </div>
+    </t>
+</templates>

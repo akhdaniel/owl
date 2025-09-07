@@ -27,7 +27,7 @@ export class LocationSearch extends Component {
     }
 
     get placeholder() {
-        return _t("Search location...");
+        return _t("Search partner location...");
     }
 
 
