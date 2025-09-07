@@ -51,7 +51,6 @@ export class OWLDashboard extends Component {
 
         this.googleMapReload = null; // Placeholder for the reload method
         this.listCardReload = null; // Placeholder for the reload method
-        this.clearPartnerSelection = null; // Placeholder for the reload method
 
 
         onWillStart(() => {
@@ -279,6 +278,9 @@ export class OWLDashboard extends Component {
         }
         if (this.pieChartReload6) {
             this.pieChartReload6();
+        }
+        if (this.pieChartReload7) {
+            this.pieChartReload7();
         }
 
         if (this.googleMapReload) {

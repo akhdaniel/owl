@@ -17,7 +17,7 @@ class SalesOrder(models.Model):
         if field == 'total_sale_order':
             domain = process_domain(domain, self)            
             where_clause, params = domain_to_sql(domain, self.env['sale.order'])
-            _logger.info(f'domain_to_sql {where_clause}, {params}')
+
             sql = f"""
                 SELECT SUM(amount_total) as total
                 FROM sale_order 
@@ -25,8 +25,7 @@ class SalesOrder(models.Model):
             """
             cr.execute(sql, params)
             res = cr.dictfetchone()
-            _logger.info(f'sql {sql}')
-            _logger.info(f'res {res}')
+
             total_sale_order = {'total': res['total'] if res else 0}
             return total_sale_order
 
@@ -87,9 +86,11 @@ class SalesOrder(models.Model):
                     COUNT(*) as count
                 FROM sale_order 
                 WHERE 1=1 {where_clause}
-                GROUP BY sale_order.date_order
+                GROUP BY EXTRACT(YEAR FROM sale_order.date_order)
             """
             cr.execute(sql, params)
+
+            _logger.info(f"======= {sql}, {params}")
             res = cr.dictfetchall()
             total_sale_order_by_year = {item['year']: item['count'] for item in res}
             return {'total_sale_order_by_year': total_sale_order_by_year}     
