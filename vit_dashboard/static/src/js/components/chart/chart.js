@@ -54,7 +54,6 @@ export class MyChart extends Component {
 
     async getStatistics() {        
         const savedState = this.loadState();
-        console.log('chart======',savedState)
         const domain = savedState.domain || this.props.domain || [];
         this.state.domain = domain
         const field = this.props.field || "count";
@@ -197,10 +196,6 @@ export class MyChart extends Component {
             // Ensure domain arrays are properly restored
             return {
                 ...parsedState,
-                partnerDomain: parsedState.partnerDomain || [],
-                locationDomain: parsedState.locationDomain || [],
-                keywordDomain: parsedState.keywordDomain || [],
-                domain: parsedState.domain || []
             };
         } catch (error) {
             console.error('Error loading state:', error);

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, api
+from odoo import models, api, fields 
 import logging
 _logger = logging.getLogger(__name__)
 from .tools import domain_to_sql, process_domain
@@ -8,6 +8,9 @@ from .tools import domain_to_sql, process_domain
 class SalesOrder(models.Model):
     _inherit = 'sale.order'
 
+    country_id = fields.Many2one(string="Partner Country", 
+        comodel_name='res.country', related="partner_id.country_id", store=True
+    )
 
     @api.model
     def get_statistics(self, domain=None, field=None, page_size=None, offset=None):
@@ -95,6 +98,13 @@ class SalesOrder(models.Model):
             total_sale_order_by_year = {item['year']: item['count'] for item in res}
             return {'total_sale_order_by_year': total_sale_order_by_year}     
         
+        elif field == 'list':
+
+            domain = process_domain(domain, self)
+            total_count = self.search_count(domain)
+            res = self.search_read(domain, order='date_order desc',  limit=page_size, offset=offset)
+            return {'data': res, 'total': total_count}
+
         else:   
             return {
                 'error':'undefined field'

@@ -28,18 +28,7 @@
                                 </div>
                             </div>
                         </div>
-                        <t t-if="'total_aktif' in state.val">
-                            <div class="d-flex justify-content-between">
-                                <div class="fs-5 fw-bold">Aktif</div>
-                                <div class="fs-5 fw-bold"><t t-out="state.val.total_aktif || 0"/></div>
-                            </div>
-                        </t>
-                        <t t-if="'total_tidak_aktif' in state.val">
-                            <div class="d-flex justify-content-between">
-                                <div class="fs-5 fw-bold">Tidak Aktif</div>
-                                <div class="fs-5 fw-bold"><t t-out="state.val.total_tidak_aktif || 0"/></div>
-                            </div>
-                        </t>
+                        
                     </div>
                 </div>
             </div>

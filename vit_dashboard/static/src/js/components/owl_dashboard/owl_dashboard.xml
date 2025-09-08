@@ -150,6 +150,7 @@
                             title="'SO per Bulan'" 
                             model="'sale.order'"
                             domain="[]"
+                            context="{'search_default_group_by_month': 1}"
                             field="'total_sale_order_by_month'"
                             onReload.bind="onPieChartReload5"
                             colorIndex="1"
@@ -161,6 +162,7 @@
                             title="'SO per Country'" 
                             model="'sale.order'"
                             domain="[]"
+                            context="{'search_default_group_by_country_id': 1}"                           
                             field="'total_sale_order_by_country'"
                             onReload.bind="onPieChartReload6"
                             colorIndex="1"
@@ -172,6 +174,7 @@
                             title="'SO per Tahun'" 
                             model="'sale.order'"
                             domain="[]"
+                            context="{'search_default_group_by_year': 1}"
                             field="'total_sale_order_by_year'"
                             onReload.bind="onPieChartReload7"
                             colorIndex="2"
@@ -182,21 +185,22 @@
                 <!-- list and maps -->
                 <div class="row py-3">
                     <div class="col-12 col-md-4">
-                        <!-- <ListCard 
+                        <ListCard 
                             style="'height: 600px; overflow-y: auto;'"
                             title="'Sale Order'" 
+                            field="'list'"
                             fields="['name', 'amount_total', 'partner_id', 'state']"
                             model="'sale.order'"
                             onReload.bind="onListCardReload"
-                        /> -->
+                        />
                     </div>
 
                     <div class="col-12 col-md-8" >
-                        <!-- <GoogleMap 
+                        <GoogleMap 
                             domain="[]"
                             model="'res.partner'"
                             onReload.bind="onGoogleMapReload"
-                        /> -->
+                        />
                     </div>
                 </div>
 

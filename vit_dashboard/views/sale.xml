@@ -1,0 +1,17 @@
+<odoo>
+<data>
+        <record id="view_sales_order_search" model="ir.ui.view">
+            <field name="name">view_sales_order_search</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+            <field name="arch" type="xml">
+                <search position="inside">
+                    <filter string="Status" domain="[]" name="group_by_state" context="{'group_by':'state'}"/>
+                    <filter string="Country" domain="[]" name="group_by_country_id" context="{'group_by':'country_id'}"/>
+                    <filter string="Month" domain="[]" name="group_by_month" context="{'group_by':'date_order:month'}"/>
+                    <filter string="Year" domain="[]" name="group_by_year" context="{'group_by':'date_order:year'}"/>
+                </search>
+            </field>
+        </record>
+</data>
+</odoo>

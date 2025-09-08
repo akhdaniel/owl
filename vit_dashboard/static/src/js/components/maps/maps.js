@@ -24,14 +24,10 @@ export class GoogleMap extends Component {
 
         this.mapLayers = useState({
             showMarkers: true,
-            showChoropleth: true,
-            choroplethType: "country"
         });
 
         this.markers = [];
         this.dataClickListener = null;
-        // this.rpc = useService("rpc");
-
 
         onWillStart(async () => {
             await this.loadGoogleMaps();
@@ -146,7 +142,6 @@ export class GoogleMap extends Component {
         this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(toggleContainer);
 
         this.addMarkersWithClusters();
-        this.loadChoroplethMap();
     }
     
     async addMarkersWithClusters() {

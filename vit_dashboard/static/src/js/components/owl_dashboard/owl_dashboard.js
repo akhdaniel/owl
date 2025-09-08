@@ -32,9 +32,19 @@ export class OWLDashboard extends Component {
             keywordDomain: savedState.keyword ? [['keyword', 'ilike', savedState.keyword]] : [],
             resModelDescription: '',
             selectedPartner: savedState.selectedPartner,
-            mapKey: Date.now(), // Add this to force remount of GoogleMap
         });
 
+        onWillStart(() => {
+            console.log("onWillStart...OWLDashboard");
+            this.reloadDashboardItems();
+        })
+
+        onMounted(()=>{
+            if (this.state.selectedPartner)
+                document.querySelector('.o-autocomplete--input').value = this.state.selectedPartner.name;
+        })
+        
+        
         this.numberCardReload1 = null; // Placeholder for the reload method
         this.mumberCardReload2 = null; // Placeholder for the reload method
         this.mumberCardReload3 = null; // Placeholder for the reload method
@@ -52,16 +62,6 @@ export class OWLDashboard extends Component {
         this.googleMapReload = null; // Placeholder for the reload method
         this.listCardReload = null; // Placeholder for the reload method
 
-
-        onWillStart(() => {
-            console.log("onWillStart...OWLDashboard", this.state.domain);
-
-            this.reloadNumberCard();
-        })
-
-        onMounted(()=>{
-            document.querySelector('.o-autocomplete--input').value = this.state.selectedPartner?.name;
-        })
     }
 
     saveState() {
@@ -95,23 +95,13 @@ export class OWLDashboard extends Component {
             
             const parsedState = JSON.parse(savedState);
 
-            console.log('parsedState======', parsedState)
-
             return {
                 ...parsedState,
-                // partnerDomain: parsedState.partnerDomain || [],
-                // locationDomain: parsedState.locationDomain || [],
-                // keywordDomain: parsedState.keywordDomain || [],
-                // domain: parsedState.domain || []
             };
         } catch (error) {
             console.error('Error loading state:', error);
             return {};
         }
-    }
-
-    onClearPartnerSelection(){
-        console.log('xelear')
     }
 
     clearSavedState() {
@@ -127,7 +117,7 @@ export class OWLDashboard extends Component {
         this.state.keywordDomain = [];
         this.state.domain = [];
 
-        this.reloadNumberCard();
+        this.reloadDashboardItems();
       
     }
 
@@ -142,7 +132,7 @@ export class OWLDashboard extends Component {
             this.state.partnerDomain = [['partner_id', '=', e.id]];
         }
         this.saveState();
-        this.reloadNumberCard();
+        this.reloadDashboardItems();
     }
 
     onNumberCardReload1(reloadMethod) {
@@ -164,11 +154,11 @@ export class OWLDashboard extends Component {
         this.mumberCardReload5 = reloadMethod; // Capture the reload method
     }
 
-    onPieChartReload1(reloadMethod, chartType) {
+    onPieChartReload1(reloadMethod) {
         this.pieChartReload1 = reloadMethod; // Capture the reload method
     }
 
-    onPieChartReload2(reloadMethod, chartType) {
+    onPieChartReload2(reloadMethod) {
         this.pieChartReload2 = reloadMethod; // Capture the reload method
     }
 
@@ -196,17 +186,6 @@ export class OWLDashboard extends Component {
         this.listCardReload = reloadMethod; // Capture the reload method
     }
 
-    onCompanyChange(e) {
-        if (e === null || e === undefined) {
-            this.state.selectedCompany = null;
-            this.state.companyDomain = [];
-        } else {
-            this.state.selectedCompany = e;
-        }
-        this.saveState();
-        this.reloadNumberCard();
-    }
-
     onLocationSearchEnter(e) {
         console.log("onLocationSearchEnter....", e);
         this.state.location = e
@@ -217,7 +196,7 @@ export class OWLDashboard extends Component {
             this.state.locationDomain = [];
         }
         this.saveState();
-        this.reloadNumberCard();
+        this.reloadDashboardItems();
     }
 
     onKeywordSearchEnter(e) {
@@ -230,14 +209,14 @@ export class OWLDashboard extends Component {
             this.state.keywordDomain = [];
         }
         this.saveState();
-        this.reloadNumberCard();
+        this.reloadDashboardItems();
     }
 
     combineDomain(){
         this.state.domain = [...(this.state.partnerDomain || []), ...(this.state.keywordDomain || []), ...(this.state.locationDomain || [])];
     }
 
-    reloadNumberCard() {
+    reloadDashboardItems() {
 
         // Call the reload method if it exists
         if (this.numberCardReload1) {

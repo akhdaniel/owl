@@ -18,5 +18,8 @@ class ResPartner(models.Model):
     
     
 
-    def get_locations(self):
-        return []
+    def get_locations(self, domain=None):
+        domain = domain or []  
+        domain = process_domain(domain, self)
+        res = self.search_read(domain, fields=["id","name","partner_latitude","partner_longitude"])
+        return res
