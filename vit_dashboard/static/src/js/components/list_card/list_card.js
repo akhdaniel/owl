@@ -52,7 +52,8 @@ export class ListCard extends Component {
         const offset = (this.state.page - 1) * this.state.pageSize;
 
         try {
-            const result = await this.orm.call( this.props.model , "get_statistics", [domain,'list', this.state.pageSize, offset]);
+            const result = await this.orm.call( this.props.model , "get_statistics", 
+                [domain,'list', this.state.pageSize, offset]);
             this.state.data = result.data;
             this.state.total = result.total;
 

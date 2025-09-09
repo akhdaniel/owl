@@ -7,10 +7,11 @@
                 <t t-esc="props.title"/> (Total: <t t-esc="state.total"/>)
             </div>
             <hr />
+            
             <!-- div class="d-flex justify-content-end align-items-center mb-2">
                 <p class="font-weight-normal">Show</p>
                 <select t-model="state.pageSize" class="form-select d-inline-block w-auto ms-2 me-2" 
-                t-on-change="onPageSizeChange">
+                    t-on-change="onPageSizeChange">
                     <option value="50">50</option>
                     <option value="100">100</option>
                 </select> 
