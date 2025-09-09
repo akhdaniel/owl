@@ -29,6 +29,12 @@ export class GoogleMap extends Component {
         this.markers = [];
         this.dataClickListener = null;
 
+
+        // Expose the reload method through the onReload callback
+        if (this.props.onReload) {
+            this.props.onReload(this.reloadMap.bind(this));
+        }  
+
         onWillStart(async () => {
             await this.loadGoogleMaps();
             await this.loadLocations();
@@ -40,25 +46,15 @@ export class GoogleMap extends Component {
             } else {
                 console.error("Google Maps API not loaded");
             }
-            // this.props.onMounted?.({ reloadMap: this.reloadMap.bind(this) });
             window.openRecord = this.openRecord.bind(this);
         });
 
         onWillUnmount(() => {
             this.cleanupMap();
         });
-
-
-        // Expose the reload method through the onReload callback
-        if (this.props.onReload) {
-            this.props.onReload(this.reloadMap.bind(this));
-        }        
     }
 
     async loadGoogleMaps() {
-        //const [config] = await this.orm.searchRead("ir.config_parameter", [['key', '=', 'google_maps.api_key']], ["value"]);
-        //const apiKey = config?.value;
-        
         const apiKey = await rpc("/gmaps/get_api_key", {});
         if (!apiKey) {
             console.error("Google Maps API key not configured");
@@ -100,7 +96,6 @@ export class GoogleMap extends Component {
     }
 
     initMap() {
-        // console.log("Initializing map...");
         this.map = new google.maps.Map(document.getElementById("map"), {
             center: { lat: 20.0, lng: 150.0 },
             zoom: 2,
@@ -123,7 +118,6 @@ export class GoogleMap extends Component {
         };
         if (this.mapLayers.showMarkers) markerBtn.classList.add("selected");
 
-        // Country Choropleth button
         // Country Choropleth toggle button
         const countryBtn = document.createElement("button");
         countryBtn.textContent = "Color by Country";
@@ -132,7 +126,6 @@ export class GoogleMap extends Component {
             this.toggleChoroplethLayer("country");
             if (this.mapLayers.showChoropleth) {
                 countryBtn.classList.add("selected");
-                // regionBtn.classList.remove("selected"); // If using region toggle
             } else {
                 countryBtn.classList.remove("selected");
             }
@@ -175,7 +168,7 @@ export class GoogleMap extends Component {
                     <h2>${loc.name}</h2>
                     <div>${loc.partner_latitude}, ${loc.partner_longitude}<br/>
                     <!--a href="/web#id=${loc.id}&model=res.partner&view_type=form"><b>View Kerjasama</b></a-->
-                    <a onclick="openRecord(${loc.id}, '${loc.name}')">View Kerjasama</a>
+                    <a onclick="openRecord(${loc.id}, '${loc.name}')">View Partner</a>
                     </div>
                 `);
                 infoWindow.open(this.map, marker);
@@ -190,96 +183,6 @@ export class GoogleMap extends Component {
         });
     }
     
-    async addMarkersWithClustersOld() {
-        // console.log("Adding markers with clusters...");
-        const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
-        const infoWindow = new google.maps.InfoWindow();
-
-        // Create AdvancedMarkerElements
-        this.markers = this.state.locations.map(loc => {
-            const pin = new PinElement({
-                background: "#1978d2",
-                borderColor: "#ffffff",
-                glyphColor: "#ffffff",
-                glyph: loc.initial || loc.name.charAt(0),
-            });
-
-            const marker = new AdvancedMarkerElement({
-                position: { lat: loc.partner_latitude, lng: loc.partner_longitude },
-                content: pin.element,
-                map: this.map,
-                title: loc.name,
-            });
-
-            marker.addListener("click", () => {
-                infoWindow.setContent(`
-                    <h2>${loc.name}</h2>
-                    <div>${loc.partner_latitude}, ${loc.partner_longitude}<br/>
-                    <a href="/web#id=${loc.id}&model=res.partner&view_type=form"><b>View Kerjasama</b></a></div>
-                `);
-                infoWindow.open({
-                    anchor: marker,
-                    map: this.map
-                });
-            });
-            return marker;
-        });
-
-        // Configure MarkerClusterer with additional options
-        this.markerCluster = new MarkerClusterer({
-            map: this.map,
-            markers: this.markers,
-            algorithm: {
-                calculate: ({ markers, position }) => {
-                    const clusters = [];
-                    const maxDistance = 40000; // 40 pixels
-                    
-                    markers.forEach((marker, i) => {
-                        let hasCluster = false;
-                        
-                        for (let j = 0; j < clusters.length; j++) {
-                            const cluster = clusters[j];
-                            const distance = google.maps.geometry.spherical.computeDistanceBetween(
-                                marker.position,
-                                cluster.position
-                            );
-                            
-                            if (distance < maxDistance) {
-                                cluster.markers.push(marker);
-                                hasCluster = true;
-                                break;
-                            }
-                        }
-                        
-                        if (!hasCluster) {
-                            clusters.push({
-                                position: marker.position,
-                                markers: [marker],
-                            });
-                        }
-                    });
-                    
-                    return clusters;
-                },
-            },
-            // renderer: {
-            //     render: ({ count, position }) => {
-            //         const cluster = new AdvancedMarkerElement({
-            //             position,
-            //             content: new PinElement({
-            //                 background: "#1978d2",
-            //                 borderColor: "#ffffff",
-            //                 glyphColor: "#ffffff",
-            //                 glyph: String(count),
-            //                 scale: 1.4
-            //             }).element
-            //         });
-            //         return cluster;
-            //     }
-            // }
-        });
-    }
-
     toggleMarkerLayer() {
         // console.log("Toggling marker layer...");
     
@@ -302,7 +205,6 @@ export class GoogleMap extends Component {
         this.mapLayers.showMarkers = !this.mapLayers.showMarkers;
     }
     
-
     async toggleChoroplethLayer(type) {
         // console.log("Toggling choropleth layer...");
     
@@ -323,9 +225,8 @@ export class GoogleMap extends Component {
         this.loadChoroplethMap();
     }
     
-    
     async loadChoroplethMap() {
-        // console.log("Loading choropleth map...");
+
         const res = await fetch("/vit_dashboard/static/src/data/world-countries.geojson");
         const geojson = await res.json();
     
@@ -393,25 +294,6 @@ export class GoogleMap extends Component {
 
     }
     
-
-    getMitraPerCountry() {
-        return this.state.locations.reduce((acc, loc) => {
-            const country = loc.country_name;
-            if (!country) return acc;
-            acc[country] = (acc[country] || 0) + 1;
-            return acc;
-        }, {});
-    }
-
-    getMitraPerRegion() {
-        return this.state.locations.reduce((acc, loc) => {
-            const region = loc.region_name;
-            if (!region) return acc;
-            acc[region] = (acc[region] || 0) + 1;
-            return acc;
-        }, {});
-    }
-
     getColor(count) {
         if (count > 100) return "#a50026";
         if (count > 50) return "#d73027";
@@ -420,13 +302,13 @@ export class GoogleMap extends Component {
         if (count > 0) return "#d9f0a3";
         return "#e0f3db";
     }
+
     openRecord(partnerId, partnerName) {
         const domain = [['name', '=', partnerId]];
-        // console.log("openRecord gmap with domain:", domain);
         this.env.services.action.doAction({
             type: 'ir.actions.act_window',
             name: partnerName,
-            res_model: 'vit.kerjasama_mitra_rel',
+            res_model: 'res.partner',
             domain: domain || [] ,
             views: [[false, 'list'], [false, 'form']],
             target: 'current',
@@ -435,17 +317,13 @@ export class GoogleMap extends Component {
 
     loadState() {
         try {
-            const savedState = localStorage.getItem('kermaDashboardState');
+            const savedState = localStorage.getItem('owlDashboardState');
             if (!savedState) return {};
             
             const parsedState = JSON.parse(savedState);
             // Ensure domain arrays are properly restored
             return {
                 ...parsedState,
-                unitDomain: parsedState.unitDomain || [],
-                locationDomain: parsedState.locationDomain || [],
-                keywordDomain: parsedState.keywordDomain || [],
-                domain: parsedState.domain || []
             };
         } catch (error) {
             console.error('Error loading state:', error);
